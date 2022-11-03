@@ -31,7 +31,7 @@ def armar_mapa(filas, columnas, cantidad_paredes, cantidad_cajas_objetivos):
                     dominio_var.append((fila,col))
         dominios[var] = dominio_var
 
-    print(dominios)
+    #print(dominios)
     #//////////////////////////////////////////////////////////////////
 
     restricciones = []
@@ -58,13 +58,12 @@ def armar_mapa(filas, columnas, cantidad_paredes, cantidad_cajas_objetivos):
         restricciones.append(((v1,v2), distinta_posicion_objetivo))
 
     def caja_contra_pared(posicion):
-        print("d")
-        return posicion[0] == 0 or pos[0] == filas-1 or posicion[1] == 0 or posicion[1] == columnas-1
+        return posicion[0] == 0 or posicion[0] == filas-1 or posicion[1] == 0 or posicion[1] == columnas-1
 
     def hasta_una_pared_adyacente (variables, values):
         caja , *paredes = values
         print("CAJA",caja)
-        print("PARED",paredes)
+        print("PAREDES",paredes)
         
         cantidad_paredes_adyacentes = 0
 
@@ -79,14 +78,19 @@ def armar_mapa(filas, columnas, cantidad_paredes, cantidad_cajas_objetivos):
         print(cantidad_paredes_adyacentes)
         return cantidad_paredes_adyacentes < 2
 
-    
-    for caja in cajas:
-        restricciones.append((tuple([caja]+paredes), hasta_una_pared_adyacente))
 
-    problema = CspProblem(variables, dominios, restricciones)
+    for caja in cajas:
+        if len(paredes) > 1:
+            for pared1, pared2 in combinations(paredes,2):
+                restricciones.append(((caja,pared1,pared2), hasta_una_pared_adyacente))
+        else:
+            restricciones.append((([caja]+paredes), hasta_una_pared_adyacente))
+
+
+    socobanProblem = CspProblem(variables, dominios, restricciones)
 
     solucion = backtrack(
-        problema,
+        socobanProblem,
         inference=False,
         variable_heuristic=MOST_CONSTRAINED_VARIABLE,
         value_heuristic=LEAST_CONSTRAINING_VALUE,
@@ -96,26 +100,18 @@ def armar_mapa(filas, columnas, cantidad_paredes, cantidad_cajas_objetivos):
     for pared in paredes:
         resultado_paredes.append(solucion[pared])
 
+    resultado_objetivos = []
+    for objetivo in objetivos:
+        resultado_objetivos.append(solucion[objetivo])
+
     resultado_cajas = []
     for caja in cajas:
         resultado_cajas.append(solucion[caja])
 
-    resultado_objetivos = []
-    for obj in objetivos:
-        resultado_objetivos.append(solucion[obj])
 
     print(solucion)
     return (resultado_paredes, resultado_cajas, resultado_objetivos, solucion['Jugador'])
 
 if __name__ == "__main__":
-    mapa_resultante = armar_mapa(3,3,1,1)
+    mapa_resultante = armar_mapa(5,5,4,2)
     print(mapa_resultante)
-
-
-
-
-
-
-
-
-

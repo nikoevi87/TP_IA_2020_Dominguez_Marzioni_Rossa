@@ -8,7 +8,7 @@ from simpleai.search import (
     astar,
     greedy,
 )
-from simpleai.search.viewers import WebViewer, BaseViewer
+from simpleai.search.viewers import BaseViewer
 
 def jugar(paredes, cajas, objetivos, jugador, maximos_movimientos):
 
@@ -166,16 +166,16 @@ if __name__ == "__main__":
         (0,0),(0,1),(0,2),(0,3),(0,4),(0,5),(0,6),
         (1,0),(1,6),
         (2,0),(2,6),
-        (3,0),(3,3),(3,4),(3,5),(3,6),
-        (4,0),(4,3),(4,6),
+        (3,0),(3,6),
+        (4,0),(4,6),
         (5,0),(5,6),
         (6,0),(6,6),
         (7,0),(7,1),(7,2),(7,3),(7,4),(7,5),(7,6)
     ]
-    objetivos = [(4,4)]
-    cajas = [(2,4)]
-    jugador = (1,2)
-    movimientos = 30
+    objetivos = [(5,4)]
+    cajas = [(3,1)]
+    jugador = (1,1)
+    movimientos = 40
     
     secuencia = jugar(paredes, cajas, objetivos, jugador, movimientos)
     print(secuencia)
